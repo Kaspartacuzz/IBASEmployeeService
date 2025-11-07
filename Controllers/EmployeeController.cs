@@ -44,9 +44,63 @@ namespace IBASEmployeeService.Controllers
                         Id = 2,
                         Name = "Support"
                     }
+                },
+                new Employee() {
+                    Id = "24",
+                    Name = "Søren Sørensen",
+                    Email = "søren@ibas.dk",
+                    Department = new Department() {
+                        Id = 3,
+                        Name = "IT"
+                    }
+                },
+                new Employee() {
+                    Id = "25",
+                    Name = "Mia Mikkelsen",
+                    Email = "mia@ibas.dk",
+                    Department = new Department() {
+                        Id = 3,
+                        Name = "IT"
+                    }
+                },
+                new Employee() {
+                    Id = "26",
+                    Name = "Thomas Thomsen",
+                    Email = "thomas@ibas.dk",
+                    Department = new Department() {
+                        Id = 3,
+                        Name = "IT"
+                    }
+                },
+                new Employee() {
+                    Id = "27",
+                    Name = "Lone Larsen",
+                    Email = "lone@ibas.dk",
+                    Department = new Department() {
+                        Id = 4,
+                        Name = "Kantinen"
+                    }
+                },
+                new Employee() {
+                    Id = "28",
+                    Name = "Peter Pedersen",
+                    Email = "peter@ibas.dk",
+                    Department = new Department() {
+                        Id = 4,
+                        Name = "Kantinen"
+                    }
                 }
             };
             return employees;
+        }
+
+        [HttpGet("GetEmployees/{departmentName}")]
+        public IEnumerable<Employee> GetEmployeesByDepartment(string departmentName)
+        {
+            var allEmployess = Get();
+
+            var filteredEmployees = allEmployess.Where(e => e.Department.Name == departmentName);
+            return filteredEmployees;
         }
     }
 
