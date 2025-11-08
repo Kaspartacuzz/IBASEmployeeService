@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Kopiér kun csproj først (giver bedre cache og færre restore-fejl)
+# Kopiér kun csproj først (cache)
 COPY *.csproj ./
 RUN dotnet restore --verbosity minimal
 
