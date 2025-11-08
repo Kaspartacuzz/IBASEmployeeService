@@ -1,18 +1,21 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine as build
-WORKDIR /app
+# ---------- Build stage ----------
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Kopiér kun csproj først (giver bedre cache og færre restore-fejl)
+COPY *.csproj ./
+RUN dotnet restore --verbosity minimal
+
+# Kopiér resten og publish
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -o /app/published-app
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine as runtime
+# ---------- Runtime stage ----------
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-COPY --from=build /app/published-app /app
+COPY --from=build /app/publish .
 
-EXPOSE 5000
-ENV ASPNETCORE_HTTP_PORTS=5000
-
-# Opret ikke-root bruger (alpine)
-RUN adduser -D -u 5678 -s /sbin/nologin appuser && chown -R appuser /app
-USER appuser
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "IBASEmployeeService.dll"]
